@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #demo {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<button id="btn">按钮</button>
+<div id="demo"></div>
+<script>
+    var demo = document.getElementById("demo");
+    var btn = document.getElementById("btn");
+    var timer = null;
+    btn.onclick = function () {
+        animate(demo, [0, 200, 0]);
+    };
+    function animate(obj, targetArr) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(function () {
+            var flag = true;
+            var leaderStr = getStyle(obj, "backgroundColor");
+            leaderStr = leaderStr.slice(4, -1);
+            var leaderArr = leaderStr.split(",");
+            var targetStr = "rgb(";//"rgb(255, 0, 0)"
+            for (var i = 0; i < leaderArr.length; i++) {
+                var leader = parseInt(leaderArr[i]);
+                var target = targetArr[i];
+                var step = (target - leader) / 10;
+                step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                leader = leader + step;
+                targetStr += leader + ",";
+                if (leader != target) {
+                    flag = false;
+                }
+            }
+            targetStr = targetStr.slice(0, -1);//"rgb(255,0,0,"
+            targetStr += ")";//"rgb(255,0,0"
+            obj.style.backgroundColor = targetStr;
+            if (flag) {
+                clearInterval(obj.timer);
+            }
+        }, 300);
+    }
+    function getStyle(obj, attr) {
+        if (window.getComputedStyle) {
+            return window.getComputedStyle(obj, null)[attr];
+        } else {
+            return obj.currentStyle[attr];
+        }
+    }
+</script>
+</body>
+</html>

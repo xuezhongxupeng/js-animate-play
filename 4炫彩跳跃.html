@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<button id="btn">按钮</button>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<script>
+    var divs = document.getElementsByTagName("div");
+    var btn = document.getElementById("btn");
+    var timer = null;
+    btn.onclick = function () {
+        setInterval(play, 350);
+    };
+    function play() {
+        for (var i = 0; i < divs.length; i++) {
+            var width = parseInt(Math.random() * 45);
+            var height = parseInt(Math.random() * 45);
+            var top = parseInt(Math.random() * 450);
+            var left = parseInt(Math.random() * 1200);
+            var bdr = parseInt(Math.random() * 45);
+            var bdr = parseInt(Math.random() * 450);
+            var red = parseInt(Math.random() * 255);
+            var green = parseInt(Math.random() * 255);
+            var blue = parseInt(Math.random() * 255);
+            var bgc = "rgb(" + red + ", " + green + ", " + blue + ")";
+            animate(divs[i], {
+                "width": width,
+                "height": height,
+                "top": top,
+                "left": left,
+                "borderRadius": bdr,
+                "backgroundColor": bgc
+            });
+        }
+    }
+    function animate(obj, json, fn) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(function () {
+            var flag = true;
+            for (var k in json) {
+                if (k === "opacity") {
+                    var leader = getStyle(obj, k) * 100;
+                    var target = json[k] * 100;
+                    var step = (target - leader) / 10;
+                    step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                    leader = leader + step;
+                    obj.style[k] = leader / 100;
+                } else if (k === "zIndex") {
+                    obj.style.zIndex = json[k];
+                } else if (k === "backgroundColor") {
+                    obj.style.backgroundColor = json[k];
+                } else {
+                    var leader = parseInt(getStyle(obj, k)) || 0;
+                    var target = json[k];
+                    var step = (target - leader) / 10;
+                    step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                    leader = leader + step;
+                    obj.style[k] = leader + "px";
+                }
+                if (leader != target) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                clearInterval(obj.timer);
+                if (fn) {
+                    fn();
+                }
+            }
+        }, 15);
+    }
+    function getStyle(obj, attr) {
+        if (window.getComputedStyle) {
+            return window.getComputedStyle(obj, null)[attr];
+        } else {
+            return obj.currentStyle[attr];
+        }
+    }
+</script>
+</body>
+</html>

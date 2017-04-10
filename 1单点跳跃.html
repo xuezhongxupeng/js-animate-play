@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 50px;
+            height: 50px;
+            background-color: purple;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<button id="btn">按钮</button>
+<div id="demo"></div>
+<script>
+    var demo = document.getElementById("demo");
+    var btn = document.getElementById("btn");
+    var timer = null;
+    btn.onclick = function () {
+        setInterval(play, 350);
+    };
+    function play() {
+        var width = parseInt(Math.random() * 450);
+        var height = parseInt(Math.random() * 350);
+        var top = parseInt(Math.random() * 350);
+        var left = parseInt(Math.random() * 800);
+        var bdr = parseInt(Math.random() * 450);
+        animate(demo, {"width": width, "height": height, "top": top, "left": left, "borderRadius": bdr});
+    }
+    function animate(obj, json) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(function () {
+            var flag = true;
+            for (var k in json) {
+                var leader = parseInt(getStyle(obj, k)) || 0;
+                var target = json[k];
+                var step = (target - leader) / 10;
+                step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                leader = leader + step;
+                obj.style[k] = leader + "px";
+                if (leader != target) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                clearInterval(obj.timer);
+            }
+        }, 15);
+    }
+
+    function getStyle(obj, attr) {
+        if (window.getComputedStyle) {
+            return window.getComputedStyle(obj, null)[attr];
+        } else {
+            return obj.currentStyle[attr];
+        }
+    }
+</script>
+</body>
+</html>
